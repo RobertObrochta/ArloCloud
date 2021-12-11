@@ -13,9 +13,7 @@ import os
 # creates these directories...
 basepath = os.getcwd()
 if not os.path.isdir(f"{basepath}/videos"):
-    os.mkdir(f"{basepath}/videos")
-
-timestamp = datetime.datetime.now().strftime("%H:%M:%S")                                                
+    os.mkdir(f"{basepath}/videos")                                               
                                                                                                                                                                                     
 email = input("Enter your Arlo email address: ")                                         
 pword = getpass.getpass(prompt="Enter password: ")                                       
@@ -31,7 +29,8 @@ garage = arlo.cameras[0]
 dates_videos = {} # here, the keys will be unique dates, and then the videos_list will be appended to each date. If there are 30 keys, delete the first ever one
 
 while garage.is_on:
-        latest_video = garage.last_video # callback to pyaarlo --> checking latest video
+        timestamp = datetime.datetime.now().strftime("%H:%M:%S") 
+        latest_video = garage.last_video # callback to pyaarlo --> checking latest video every callback
         video_name = f"{basepath}/videos/garage_{date.today()}_{timestamp}.mp4"
         print(f"Record from the past 30 days: {dates_videos}\n")
         url = latest_video.url
@@ -41,11 +40,11 @@ while garage.is_on:
 
         match = False
         for item in dates_videos[date.today()]:
-                compare_url = item[1]
+                compare_url = item[0]
                 if compare_url == url:
                         match = True
 
-        if match == False: # save video, it is NOT in today's specific list values
+        if match == False: # save video, it is NOT anywhere in today's specific list values
                 r = requests.get(url)
                 open(f"{video_name}", "wb").write(r.content)
                 dates_videos[date.today()].append((url, video_name)) # ...append tuple (url, saved_video_name) to the established list
