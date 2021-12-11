@@ -55,10 +55,11 @@ while garage.is_on:
                 for key in dict.keys():
                         if i == 0:
                                 # delete the videos from the file system, then delete entire k:v pair from dictionary
-                                video_delete = dates_videos[key][1]
-                                os.remove(video_delete)
-                                del dates_videos[key]
-                                break
+                                for item in dates_videos[key]:
+                                        video_delete = item[1] # second item of tuple, the video
+                                        os.remove(video_delete)
+                                        del dates_videos[key]
+                        break
 
         # check every {interval} seconds for an update
         time.sleep(60)
